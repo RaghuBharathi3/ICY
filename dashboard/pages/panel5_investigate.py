@@ -83,7 +83,7 @@ def render(client) -> None:
             return f"color:{color}; font-weight:600;"
 
         styled = (
-            df.style.applymap(style_decision, subset=["Decision"])
+            df.style.map(style_decision, subset=["Decision"])
             .set_properties(**{"background-color": "#111827", "color": "#e2e8f0"})
             .set_table_styles([{"selector": "th", "props": [
                 ("background-color","#0f1629"), ("color","#7dd3fc"),
