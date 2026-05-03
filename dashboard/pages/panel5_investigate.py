@@ -225,7 +225,7 @@ def render(client) -> None:
                     <div style="color:#6b7fa3; font-size:0.85rem; margin-top:0.5rem;">
                         RF Confidence: <b style="color:#e2e8f0;">{conf:.4f}</b> &nbsp;|&nbsp;
                         IF Anomaly: <b style="color:{'#f59e0b' if result.get('if_anomaly') else '#10b981'};">
-                        {'⚠️ Yes' if result.get('if_anomaly') else '✅ No'}</b>
+                        {'[WARNING] Yes' if result.get('if_anomaly') else '[OK] No'}</b>
                     </div>
                 </div>""", unsafe_allow_html=True)
 

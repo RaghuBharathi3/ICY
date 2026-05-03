@@ -116,7 +116,7 @@ def print_summary(results: dict):
 def main():
     parser = argparse.ArgumentParser(description="IDS Training Orchestrator")
     parser.add_argument("--data", default="data/raw", help="Path to ML-ready CICIDS2017 CSV directory")
-    parser.add_argument("--raw-flows", default="data/raw_flows",
+    parser.add_argument("--raw-flows", default="",
                         dest="raw_flows",
                         help="Path to raw per-flow CSV directory (GeneratedLabelledFlows). "
                              "Set to '' to disable. Default: data/raw_flows")

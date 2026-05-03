@@ -73,6 +73,7 @@ class Predictor:
         src_ip: str = "unknown",
         dst_ip: str = "unknown",
         raw_features: Optional[dict] = None,
+        explain: bool = True,
     ) -> FlowRecord:
         """Run full prediction pipeline for a single flow vector."""
         if x.ndim == 1:
@@ -90,14 +91,15 @@ class Predictor:
         else:
             decision = "NORMAL"
 
-        # SHAP explanation
+        # SHAP explanation — skipped during bulk inference for speed
         top_features = []
-        explainer = self._get_shap_explainer()
-        if explainer:
-            try:
-                top_features = explainer.explain_single(x)
-            except Exception as e:
-                logger.warning(f"SHAP explanation failed: {e}")
+        if explain:
+            explainer = self._get_shap_explainer()
+            if explainer:
+                try:
+                    top_features = explainer.explain_single(x)
+                except Exception as e:
+                    logger.warning(f"SHAP explanation failed: {e}")
 
         return FlowRecord(
             src_ip=src_ip,
@@ -110,6 +112,35 @@ class Predictor:
             raw_features=raw_features or {},
         )
 
-    def predict_batch(self, X: np.ndarray) -> list[FlowRecord]:
-        """Run prediction on a batch (e.g., from a CSV file)."""
-        return [self.predict_single(X[i]) for i in range(len(X))]
+    def predict_batch(self, X: np.ndarray, explain: bool = False) -> list[FlowRecord]:
+        """Fast vectorised batch prediction. SHAP disabled by default for speed."""
+        rf_preds = self.rf.predict(X)
+        rf_probs = self.rf.predict_proba(X)[:, 1]
+        if_scores = self.if_.decision_function(X)
+
+        records = []
+        for i in range(len(X)):
+            if rf_preds[i] == 1:
+                decision = "ATTACK"
+            elif if_scores[i] < 0:
+                decision = "SUSPICIOUS"
+            else:
+                decision = "NORMAL"
+
+            top_features = []
+            if explain:
+                explainer = self._get_shap_explainer()
+                if explainer:
+                    try:
+                        top_features = explainer.explain_single(X[i:i+1])
+                    except Exception as e:
+                        logger.warning(f"SHAP failed row {i}: {e}")
+
+            records.append(FlowRecord(
+                decision=decision,
+                rf_confidence=round(float(rf_probs[i]), 4),
+                if_anomaly_score=round(float(if_scores[i]), 4),
+                is_anomalous=bool(if_scores[i] < 0),
+                top_features=top_features,
+            ))
+        return records

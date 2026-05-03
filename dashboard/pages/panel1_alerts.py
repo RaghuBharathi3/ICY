@@ -17,7 +17,7 @@ def render(client) -> None:
     # ── Header ──────────────────────────────────────────────────────────────
     st.markdown("""
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:1.5rem;">
-        <span style="font-size:2rem;">🚨</span>
+        <span style="font-size:2rem;">[ALERT]</span>
         <div>
             <h1 style="margin:0; font-size:1.6rem; color:#f87171;">Live Alert Feed</h1>
             <p style="margin:0; color:#4b5e7e; font-size:0.82rem;">Real-time ATTACK & SUSPICIOUS flows — click any row to investigate</p>
@@ -36,10 +36,10 @@ def render(client) -> None:
     with col_b:
         max_rows = st.slider("Max rows", 10, 100, 30, 5, key="p1_rows")
     with col_c:
-        auto_refresh = st.toggle("⚡ Auto-refresh (10s)", value=False, key="p1_refresh")
+        auto_refresh = st.toggle("Auto-refresh (10s)", value=False, key="p1_refresh")
     with col_d:
         st.markdown("<div style='margin-top:1.6rem;'>", unsafe_allow_html=True)
-        if st.button("🔄 Refresh now", key="p1_manual_refresh"):
+        if st.button("Refresh now", key="p1_manual_refresh"):
             st.cache_data.clear()
         st.markdown("</div>", unsafe_allow_html=True)
 

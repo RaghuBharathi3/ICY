@@ -6,7 +6,7 @@ Skill references: scikit-learn, ml-pipeline-workflow
 
 Role: Secondary anomaly detection layer.
 Detects behavioral anomalies that the supervised RF might miss.
-contamination=0.1 → ~10% of flows expected to be anomalous.
+contamination=0.05 → ~5% of flows expected to be anomalous (conservative, reduces FP rate).
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ MODELS_DIR = Path("artifacts/models")
 
 def train_isolation_forest(
     X_train: np.ndarray,
-    contamination: float = 0.1,
+    contamination: float = 0.05,
     n_estimators: int = 100,
     random_state: int = 42,
 ) -> IsolationForest:
@@ -59,7 +59,7 @@ def save_if_model(model: IsolationForest) -> Path:
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     path = MODELS_DIR / "if_model.pkl"
     joblib.dump(model, path)
-    logger.info(f"Isolation Forest saved → {path}")
+    logger.info(f"Isolation Forest saved -> {path}")
     return path
 
 

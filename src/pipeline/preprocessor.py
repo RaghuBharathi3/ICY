@@ -110,6 +110,7 @@ def filter_labels(df: pd.DataFrame) -> pd.DataFrame:
     if label_col not in df.columns:
         raise KeyError(f"'{label_col}' column not found. Available: {df.columns.tolist()}")
     df[label_col] = df[label_col].str.strip()
+    df[label_col] = df[label_col].str.replace(r'[^\x00-\x7F]+', '-', regex=True)
     # Map: BENIGN=0, attack=1
     df["target"] = df[label_col].apply(lambda x: 0 if x == "BENIGN" else 1)
     kept = df["target"].value_counts()

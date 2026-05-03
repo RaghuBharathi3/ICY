@@ -1,0 +1,9 @@
+DDoS,BENIGN,_file,_total_rows,PortScan,Bot,Infiltration,Web Attack - Brute Force,Web Attack - XSS,Web Attack - Sql Injection,FTP-Patator,SSH-Patator,DoS Hulk,DoS GoldenEye,DoS slowloris,DoS Slowhttptest,Heartbleed
+128027.0,97718,Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,225745,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+0.0,127537,Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,286467,158930.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+0.0,189067,Friday-WorkingHours-Morning.pcap_ISCX.csv,191033,0.0,1966.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+0.0,529918,Monday-WorkingHours.pcap_ISCX.csv,529918,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+0.0,288566,Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,288602,0.0,0.0,36.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+0.0,168186,Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,170366,0.0,0.0,0.0,1507.0,652.0,21.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+0.0,432074,Tuesday-WorkingHours.pcap_ISCX.csv,445909,0.0,0.0,0.0,0.0,0.0,0.0,7938.0,5897.0,0.0,0.0,0.0,0.0,0.0
+0.0,440031,Wednesday-workingHours.pcap_ISCX.csv,692703,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,231073.0,10293.0,5796.0,5499.0,11.0

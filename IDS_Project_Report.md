@@ -72,12 +72,12 @@ The two CSV formats share 79 identical feature columns. The raw flow CSVs contai
 
 | Column | Present in ML CSV | Present in Raw Flow CSV |
 |---|---|---|
-| `Flow ID` | ✗ | ✓ |
-| `Source IP` | ✗ | ✓ |
-| `Source Port` | ✗ | ✓ |
-| `Destination IP` | ✗ | ✓ |
-| `Protocol` | ✗ | ✓ |
-| `Timestamp` | ✗ | ✓ |
+| `Flow ID` | [NO] | [YES] |
+| `Source IP` | [NO] | [YES] |
+| `Source Port` | [NO] | [YES] |
+| `Destination IP` | [NO] | [YES] |
+| `Protocol` | [NO] | [YES] |
+| `Timestamp` | [NO] | [YES] |
 
 All 6 extra columns are non-feature identity fields and are dropped during preprocessing via `DROP_COLS`.
 
@@ -98,7 +98,7 @@ def load_raw(
 
 A helper `_read_csvs_from_dir()` function handles per-directory loading with encoding fallback.
 
-### 3.2 Encoding Fallback
+### 3.2 Encoding & Label Fallback
 
 The raw per-flow CSVs use Windows-1252 encoding (byte `0x96` = en-dash `–`). A three-tier encoding fallback was implemented to handle both file types transparently:
 
@@ -109,6 +109,12 @@ for enc in ("utf-8", "cp1252", "latin-1"):
         break
     except (UnicodeDecodeError, pd.errors.ParserError):
         continue
+```
+
+Additionally, non-ASCII characters inside the label strings (such as `Web Attack – Brute Force`) caused logging-related encoding errors. These were resolved by stripping and replacing non-ASCII characters with hyphens during preprocessing:
+
+```python
+df["Label"] = df["Label"].str.replace(r'[^\x00-\x7F]+', '-', regex=True)
 ```
 
 ### 3.3 Extended DROP_COLS
@@ -136,15 +142,15 @@ if apply_engineering:
     logger.info(f"Post-engineering clean shape: {df.shape}")
 ```
 
-### 3.5 CLI Flag
+### 3.5 CLI Flag & Duplicate Removal
 
-`run_training.py` was extended with a `--raw-flows` argument that auto-detects and merges the raw flow directory:
+`run_training.py` was extended with a `--raw-flows` argument to optionally merge the raw flow directory. By default, this is disabled (`""`) to prevent storage-heavy dataset redundancy and memory bloat during ensemble training, as the `data/raw_flows` duplicates much of `data/raw`.
 
 ```python
-parser.add_argument("--raw-flows", default="data/raw_flows", dest="raw_flows")
+parser.add_argument("--raw-flows", default="", dest="raw_flows")
 ```
 
-If the directory exists and contains CSVs, it is automatically included. The flag can be set to `''` to disable.
+If the directory is provided and contains CSVs, it is included. Otherwise, it safely trains on the canonical non-redundant ML-ready CSVs.
 
 ---
 
@@ -247,14 +253,14 @@ All 8 FastAPI endpoints (`src/api/main.py`) were reviewed and confirmed correct:
 
 | Endpoint | Status |
 |---|---|
-| `GET /api/health` | ✅ Checks `rf_model.pkl` + `if_model.pkl` existence |
-| `GET /api/flows` | ✅ Paginated, correct |
-| `GET /api/flows/{id}` | ✅ |
-| `GET /api/flows/{id}/explain` | ✅ SHAP via `plain_english_explanation` |
-| `GET /api/alerts` | ✅ Filters ATTACK/SUSPICIOUS |
-| `GET /api/stats` | ✅ |
-| `POST /api/predict` | ✅ Feature ordering via `feature_cols` |
-| `GET /api/model/performance` | ✅ Reads all 3 report JSONs |
+| `GET /api/health` | [OK] Checks `rf_model.pkl` + `if_model.pkl` existence |
+| `GET /api/flows` | [OK] Paginated, correct |
+| `GET /api/flows/{id}` | [OK] |
+| `GET /api/flows/{id}/explain` | [OK] SHAP via `plain_english_explanation` |
+| `GET /api/alerts` | [OK] Filters ATTACK/SUSPICIOUS |
+| `GET /api/stats` | [OK] |
+| `POST /api/predict` | [OK] Feature ordering via `feature_cols` |
+| `GET /api/model/performance` | [OK] Reads all 3 report JSONs |
 
 ### 5.2 Fixes Applied
 

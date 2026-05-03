@@ -147,7 +147,7 @@ def start_watcher(watch_dir: str | Path = WATCH_DIR):
     observer = Observer()
     observer.schedule(handler, str(watch_dir), recursive=False)
     observer.start()
-    logger.info(f"🔍 Watching {watch_dir} for new CSV files... (Ctrl+C to stop)")
+    logger.info(f"Watching {watch_dir} for new CSV files... (Ctrl+C to stop)")
 
     try:
         while True:

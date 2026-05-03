@@ -100,7 +100,7 @@ def save_model(model: RandomForestClassifier, name: str = "rf_model") -> Path:
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     path = MODELS_DIR / f"{name}.pkl"
     joblib.dump(model, path)
-    logger.info(f"Model saved → {path}")
+    logger.info(f"Model saved -> {path}")
     return path
 
 
@@ -110,7 +110,7 @@ def save_report(metrics: dict, name: str) -> Path:
     path = REPORTS_DIR / f"{name}.json"
     with open(path, "w") as f:
         json.dump(metrics, f, indent=2)
-    logger.info(f"Report saved → {path}")
+    logger.info(f"Report saved -> {path}")
     return path
 
 
