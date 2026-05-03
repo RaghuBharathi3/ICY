@@ -54,7 +54,7 @@ def run_baseline(data_dir: str, extra_dirs: list | None = None) -> dict:
     logger.info("=" * 60)
     from src.models.train_rf import run_experiment_1_baseline
     metrics = run_experiment_1_baseline(data_dir, extra_dirs=extra_dirs)
-    logger.info(f"✅ Baseline  F1={metrics['f1']:.4f}  ROC-AUC={metrics['roc_auc']:.4f}")
+    logger.info(f"[DONE] Baseline    F1={metrics['f1']:.4f}  ROC-AUC={metrics['roc_auc']:.4f}")
     return metrics
 
 
@@ -65,7 +65,7 @@ def run_engineered(data_dir: str, extra_dirs: list | None = None):
     logger.info("=" * 60)
     from src.models.train_rf import run_experiment_2_engineered
     rf_model, metrics = run_experiment_2_engineered(data_dir, extra_dirs=extra_dirs)
-    logger.info(f"✅ Engineered F1={metrics['f1']:.4f}  ROC-AUC={metrics['roc_auc']:.4f}")
+    logger.info(f"[DONE] Engineered  F1={metrics['f1']:.4f}  ROC-AUC={metrics['roc_auc']:.4f}")
     return rf_model, metrics
 
 
@@ -76,7 +76,7 @@ def run_ensemble(data_dir: str, rf_model, extra_dirs: list | None = None) -> dic
     logger.info("=" * 60)
     from src.models.ensemble import run_experiment_3_ensemble
     metrics = run_experiment_3_ensemble(data_dir, rf_model, extra_dirs=extra_dirs)
-    logger.info(f"✅ Ensemble  F1={metrics['f1']:.4f}  ROC-AUC={metrics['roc_auc']:.4f}")
+    logger.info(f"[DONE] Ensemble    F1={metrics['f1']:.4f}  ROC-AUC={metrics['roc_auc']:.4f}")
     return metrics
 
 
@@ -175,7 +175,7 @@ def main():
         save_feature_cols(data_dir, extra_dirs)
 
         elapsed = time.time() - t0
-        logger.info(f"\n⏱️  Total training time: {elapsed:.1f}s ({elapsed/60:.1f} min)")
+        logger.info(f"\n  Total training time: {elapsed:.1f}s ({elapsed/60:.1f} min)")
         print_summary(results)
 
     except FileNotFoundError as e:

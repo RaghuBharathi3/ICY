@@ -20,7 +20,7 @@ import streamlit as st
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="IDS · Intrusion Detection System",
-    page_icon="🛡️",
+    page_icon="IDS",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
@@ -144,7 +144,7 @@ div[data-testid="stMarkdownContainer"] h3 { color: #bfdbfe; }
 with st.sidebar:
     st.markdown("""
     <div style="text-align:center; padding: 1rem 0 1.5rem 0;">
-        <div style="font-size:2.5rem; margin-bottom:0.3rem;">🛡️</div>
+        <div style="font-size:1.4rem; font-weight:800; margin-bottom:0.3rem;">IDS</div>
         <div style="font-size:1.1rem; font-weight:700; color:#7dd3fc; letter-spacing:0.05em;">IDS Dashboard</div>
         <div style="font-size:0.72rem; color:#4b5e7e; margin-top:0.2rem;">ML Intrusion Detection System</div>
     </div>
@@ -153,11 +153,11 @@ with st.sidebar:
     panel = st.radio(
         "Navigation",
         options=[
-            "🚨  Panel 1 — Live Alerts",
-            "📊  Panel 2 — Traffic Overview",
-            "🔍  Panel 3 — SHAP Explainability",
-            "📈  Panel 4 — Model Performance",
-            "🔎  Panel 5 — Flow Investigation",
+            "[1]  Panel 1 — Live Alerts",
+            "[2]  Panel 2 — Traffic Overview",
+            "[3]  Panel 3 — SHAP Explainability",
+            "[4]  Panel 4 — Model Performance",
+            "[5]  Panel 5 — Flow Investigation",
         ],
         label_visibility="collapsed",
     )
@@ -186,7 +186,7 @@ with st.sidebar:
 
     dot_class = "online" if is_online else "offline"
     status_text = "API Online" if is_online else "API Offline"
-    model_status = "✅ Models ready" if models_ready else "⚠️ Train models first"
+    model_status = "[OK] Models ready" if models_ready else "[!] Train models first"
 
     st.markdown(f"""
     <div style="font-size:0.78rem;">

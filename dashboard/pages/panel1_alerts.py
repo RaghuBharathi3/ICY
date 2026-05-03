@@ -93,7 +93,7 @@ def render(client) -> None:
     if not alerts:
         st.markdown("""
         <div style="text-align:center; padding:3rem; color:#4b5e7e; border:1px dashed #1e3a5f; border-radius:12px;">
-            <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
+            <div style="font-size:3rem; margin-bottom:1rem;">--</div>
             <div style="font-size:1.1rem; font-weight:500;">No threats detected</div>
             <div style="font-size:0.8rem; margin-top:0.5rem;">All monitored flows classified as NORMAL</div>
         </div>
@@ -125,7 +125,7 @@ def render(client) -> None:
             "Confidence": f"{conf:.3f}",
             "Top Feature": top_feat,
             "Time":       ts_fmt,
-            "IF Anomaly": "⚠️" if f.get("if_anomaly") else "—",
+            "IF Anomaly": "Yes" if f.get("if_anomaly") else "--",
         })
 
     df = pd.DataFrame(rows)
@@ -162,7 +162,7 @@ def render(client) -> None:
     st.dataframe(styled, use_container_width=True, height=420)
 
     # ── Alert detail expander ─────────────────────────────────────────────────
-    st.markdown("<div class='section-header' style='margin-top:1.5rem;'>🔎 Quick Inspect</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header' style='margin-top:1.5rem;'>Quick Inspect</div>", unsafe_allow_html=True)
     flow_ids = [f["flow_id"] for f in alerts]
     selected_id = st.selectbox("Select a flow to inspect:", flow_ids, key="p1_select")
 

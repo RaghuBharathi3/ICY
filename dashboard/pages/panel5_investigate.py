@@ -19,7 +19,6 @@ DECISION_COLORS = {"ATTACK": "#ef4444", "SUSPICIOUS": "#f59e0b", "NORMAL": "#10b
 def render(client) -> None:
     st.markdown("""
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-        <span style="font-size:2rem;">🔎</span>
         <div>
             <h1 style="margin:0;font-size:1.6rem;color:#7dd3fc;">Flow Investigation</h1>
             <p style="margin:0;color:#4b5e7e;font-size:0.82rem;">
@@ -28,7 +27,7 @@ def render(client) -> None:
         </div>
     </div>""", unsafe_allow_html=True)
 
-    tab1, tab2 = st.tabs(["🔍 Search & Inspect", "🧪 Manual Predict"])
+    tab1, tab2 = st.tabs(["Search & Inspect", "Manual Predict"])
 
     # ── Tab 1: Search & Inspect ────────────────────────────────────────────
     with tab1:
@@ -39,7 +38,7 @@ def render(client) -> None:
 
         col_a, col_b, col_c = st.columns([2, 2, 2])
         with col_a:
-            search_ip = st.text_input("🔎 Filter by Source IP", placeholder="e.g. 192.168.1.5", key="p5_ip")
+            search_ip = st.text_input("Filter by Source IP", placeholder="e.g. 192.168.1.5", key="p5_ip")
         with col_b:
             filter_dec = st.multiselect(
                 "Decision filter",
@@ -74,7 +73,7 @@ def render(client) -> None:
                 "Src IP":    f.get("src_ip", "—"),
                 "Dst IP":    f.get("dst_ip", "—"),
                 "RF Conf":   f"{f.get('rf_confidence', 0):.3f}",
-                "IF Anomaly": "⚠️ Yes" if f.get("if_anomaly") else "No",
+                "IF Anomaly": "Yes" if f.get("if_anomaly") else "No",
                 "Timestamp": (f.get("timestamp", "")[:19] or "—"),
             })
         df = pd.DataFrame(rows)
@@ -94,7 +93,7 @@ def render(client) -> None:
         st.dataframe(styled, use_container_width=True, height=320)
 
         # ── Flow detail drill-down ─────────────────────────────────────────
-        st.markdown("<div class='section-header' style='margin-top:1.5rem;'>📋 Flow Detail</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-header' style='margin-top:1.5rem;'>Flow Detail</div>", unsafe_allow_html=True)
         flow_map = {f"{f['flow_id']} | {f['decision']} | {f.get('src_ip','?')}": f["flow_id"]
                     for f in filtered}
         selected_label = st.selectbox("Select flow:", list(flow_map.keys()), key="p5_sel")
@@ -122,7 +121,7 @@ def render(client) -> None:
                     </span>
                     <span style="color:#6b7fa3; font-size:0.8rem; margin-left:1rem;">
                         IF Anomaly: <b style="color:{'#f59e0b' if is_anomaly else '#10b981'};">
-                            {'⚠️ Yes' if is_anomaly else '✅ No'}</b>
+                            {'Yes' if is_anomaly else 'No'}</b>
                     </span>
                 </div>
                 <div style="font-size:0.75rem; color:#4b5e7e; font-family:'JetBrains Mono',monospace;">
@@ -174,7 +173,7 @@ def render(client) -> None:
 
     # ── Tab 2: Manual Predict ──────────────────────────────────────────────
     with tab2:
-        st.markdown("<div class='section-header'>🧪 Manual Flow Prediction</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-header'>Manual Flow Prediction</div>", unsafe_allow_html=True)
         st.markdown("""
         <div style="color:#6b7fa3; font-size:0.82rem; margin-bottom:1.2rem;">
             Enter feature values manually and run inference through the RF + IF ensemble.
@@ -207,7 +206,7 @@ def render(client) -> None:
             "flow_duration_var": dur_var,
         }
 
-        if st.button("🚀 Run Prediction", key="p5_predict", use_container_width=True):
+        if st.button("Run Prediction", key="p5_predict", use_container_width=True):
             with st.spinner("Running RF + IF ensemble inference..."):
                 result = client.predict(features, src_ip=src_ip, dst_ip=dst_ip)
 

@@ -5,32 +5,32 @@
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 ids-ml-project/
 ├── data/
-│   ├── raw/          ← place CICIDS2017 CSV files here
-│   ├── processed/    ← auto-generated cleaned data
-│   └── watch/        ← drop CSVs here for live inference
+│   ├── raw/          <- place CICIDS2017 CSV files here
+│   ├── processed/    <- auto-generated cleaned data
+│   └── watch/        <- drop CSVs here for live inference
 ├── src/
-│   ├── pipeline/     ← preprocessor, predictor, watcher, flow_extractor
-│   ├── models/       ← train_rf, train_if, ensemble
-│   ├── explainability/   ← shap_explainer
-│   └── api/          ← FastAPI (8 endpoints)
+│   ├── pipeline/     <- preprocessor, predictor, watcher, flow_extractor
+│   ├── models/       <- train_rf, train_if, ensemble
+│   ├── explainability/   <- shap_explainer
+│   └── api/          <- FastAPI (8 endpoints)
 ├── dashboard/
-│   ├── app.py        ← Streamlit entry point
-│   ├── components/   ← api_client
-│   └── pages/        ← panel1–5
-├── tests/            ← 25 passing tests
-├── artifacts/        ← models, reports, plots (auto-generated)
-├── run_training.py   ← master training orchestrator
+│   ├── app.py        <- Streamlit entry point
+│   ├── components/   <- api_client
+│   └── pages/        <- panel1-5
+├── tests/            <- 25 passing tests
+├── artifacts/        <- models, reports, plots (auto-generated)
+├── run_training.py   <- master training orchestrator
 └── requirements.txt
 ```
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Install dependencies
 ```powershell
@@ -59,15 +59,15 @@ Open: **http://localhost:8501**
 
 ---
 
-## 🧪 Run Tests
+## Run Tests
 ```powershell
 python -m pytest tests/ -v
 ```
-**25/25 tests passing** ✅
+**25/25 tests passing**
 
 ---
 
-## 📊 3 Experiments
+## 3 Experiments
 
 | Experiment | Features | SMOTE | Purpose |
 |-----------|---------|-------|---------|
@@ -77,7 +77,7 @@ python -m pytest tests/ -v
 
 ---
 
-## 🔬 7 Engineered Features
+## 7 Engineered Features
 
 | Feature | Attack Signal |
 |---------|--------------|
@@ -91,7 +91,7 @@ python -m pytest tests/ -v
 
 ---
 
-## 🛡️ Dashboard Panels
+## Dashboard Panels
 
 | Panel | What it shows |
 |-------|--------------|
@@ -103,7 +103,7 @@ python -m pytest tests/ -v
 
 ---
 
-## 📡 API Endpoints (FastAPI)
+## API Endpoints (FastAPI)
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -120,7 +120,7 @@ Docs: **http://localhost:8000/docs**
 
 ---
 
-## ⚠️ Limitations
+## Limitations
 
 - Research prototype — not a production IDS
 - No live packet capture (flow-level analysis only)

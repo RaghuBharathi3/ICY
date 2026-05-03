@@ -22,7 +22,6 @@ COLORS = {"ATTACK": "#ef4444", "SUSPICIOUS": "#f59e0b", "NORMAL": "#10b981"}
 def render(client) -> None:
     st.markdown("""
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-        <span style="font-size:2rem;">📊</span>
         <div>
             <h1 style="margin:0;font-size:1.6rem;color:#7dd3fc;">Traffic Distribution</h1>
             <p style="margin:0;color:#4b5e7e;font-size:0.82rem;">Network flow classification breakdown</p>
@@ -58,7 +57,7 @@ def render(client) -> None:
     counts = Counter(f["decision"] for f in flows)
 
     with c1:
-        st.markdown("<div class='section-header'>🍩 Classification Breakdown</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-header'>Classification Breakdown</div>", unsafe_allow_html=True)
         labels = list(counts.keys())
         values = list(counts.values())
         colors = [COLORS.get(k, "#6b7fa3") for k in labels]
@@ -77,7 +76,7 @@ def render(client) -> None:
         st.plotly_chart(fig, use_container_width=True)
 
     with c2:
-        st.markdown("<div class='section-header'>📶 Confidence by Class</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-header'>Confidence Distribution by Class</div>", unsafe_allow_html=True)
         df_c = pd.DataFrame({"Decision": f["decision"], "Confidence": f.get("rf_confidence", 0)} for f in flows)
         fig2 = go.Figure()
         for d, color in COLORS.items():
@@ -93,7 +92,7 @@ def render(client) -> None:
         st.plotly_chart(fig2, use_container_width=True)
 
     # ── Time-series ───────────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>⏱️ Threat Activity Over Time</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Threat Activity Over Time</div>", unsafe_allow_html=True)
     ts_rows = []
     for f in flows:
         ts = f.get("timestamp", "")
@@ -118,7 +117,7 @@ def render(client) -> None:
         st.info("No timestamp data for time-series chart.")
 
     # ── Top attacking IPs ─────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>🔥 Top Attacking Source IPs</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Top Attacking Source IPs</div>", unsafe_allow_html=True)
     attack_flows = [f for f in flows if f["decision"] in ("ATTACK", "SUSPICIOUS")]
     top_ips = Counter(f.get("src_ip", "?") for f in attack_flows).most_common(10)
     if top_ips:

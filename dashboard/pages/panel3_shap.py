@@ -19,7 +19,6 @@ _LAYOUT = dict(
 def render(client) -> None:
     st.markdown("""
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-        <span style="font-size:2rem;">🔍</span>
         <div>
             <h1 style="margin:0;font-size:1.6rem;color:#7dd3fc;">SHAP Explainability</h1>
             <p style="margin:0;color:#4b5e7e;font-size:0.82rem;">
@@ -53,7 +52,7 @@ def render(client) -> None:
     feat_vals  = [round(x[1], 4) for x in sorted_feats]
 
     # ── Global importance bar ─────────────────────────────────────────────
-    st.markdown("<div class='section-header'>🌍 Global Feature Importance (mean |SHAP|)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Global Feature Importance (mean |SHAP|)</div>", unsafe_allow_html=True)
 
     bar_colors = []
     for v in feat_vals:
@@ -82,7 +81,7 @@ def render(client) -> None:
     st.plotly_chart(fig, use_container_width=True)
 
     # ── Per-attack vs per-normal comparison ──────────────────────────────
-    st.markdown("<div class='section-header'>⚔️ Attack vs Normal Feature Importance</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Attack vs Normal Feature Importance</div>", unsafe_allow_html=True)
 
     attack_agg: dict[str, list[float]] = defaultdict(list)
     normal_agg: dict[str, list[float]] = defaultdict(list)
@@ -113,7 +112,7 @@ def render(client) -> None:
     st.plotly_chart(fig2, use_container_width=True)
 
     # ── Per-flow SHAP drill-down ──────────────────────────────────────────
-    st.markdown("<div class='section-header'>🎯 Per-Flow SHAP Explanation</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Per-Flow SHAP Explanation</div>", unsafe_allow_html=True)
 
     attack_flows = [f for f in flows if f.get("decision") in ("ATTACK", "SUSPICIOUS")]
     if not attack_flows:
@@ -163,7 +162,7 @@ def render(client) -> None:
 
 
 def _show_feature_description_table():
-    st.markdown("<div class='section-header'>📚 Engineered Feature Reference</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Engineered Feature Reference</div>", unsafe_allow_html=True)
     data = {
         "Feature":      ["syn_ack_ratio", "bytes_per_second", "packets_per_second",
                          "fwd_bwd_ratio", "avg_packet_size", "iat_mean", "flow_duration_var"],

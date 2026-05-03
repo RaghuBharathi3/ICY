@@ -37,7 +37,6 @@ def _delta_badge(val: float, ref: float, higher_better: bool = True) -> str:
 def render(client) -> None:
     st.markdown("""
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-        <span style="font-size:2rem;">📈</span>
         <div>
             <h1 style="margin:0;font-size:1.6rem;color:#7dd3fc;">Model Performance</h1>
             <p style="margin:0;color:#4b5e7e;font-size:0.82rem;">
@@ -66,7 +65,7 @@ def render(client) -> None:
             color = EXP_COLORS.get(name, "#6b7fa3")
             is_best = name == best_model
             border = f"2px solid {color}" if is_best else f"1px solid #1e3a5f"
-            crown  = " 👑" if is_best else ""
+            crown  = " [Best]" if is_best else ""
             st.markdown(f"""
             <div class="metric-card" style="border:{border};">
                 <div style="font-size:0.7rem;color:{color};text-transform:uppercase;
@@ -84,7 +83,7 @@ def render(client) -> None:
     st.markdown("<div style='margin-top:1.5rem;'></div>", unsafe_allow_html=True)
 
     # ── Grouped metric bar chart ──────────────────────────────────────────
-    st.markdown("<div class='section-header'>📊 Metric Comparison</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Metric Comparison</div>", unsafe_allow_html=True)
 
     metrics_to_plot = ["f1", "roc_auc", "fp_rate"]
     metric_labels   = ["F1 Score", "ROC-AUC", "FP Rate (lower=better)"]
@@ -109,7 +108,7 @@ def render(client) -> None:
     st.plotly_chart(fig, use_container_width=True)
 
     # ── Confusion matrices ────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>🔢 Confusion Matrices</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Confusion Matrices</div>", unsafe_allow_html=True)
     cm_cols = st.columns(len(experiments))
 
     for i, (name, metrics) in enumerate(experiments.items()):
@@ -147,7 +146,7 @@ def render(client) -> None:
             st.plotly_chart(fig_cm, use_container_width=True)
 
     # ── Delta table ───────────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>📐 Improvement Delta — Baseline vs Best</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Improvement Delta — Baseline vs Best</div>", unsafe_allow_html=True)
     if "baseline" in experiments and best_model in experiments and best_model != "baseline":
         base  = experiments["baseline"]
         best  = experiments[best_model]
