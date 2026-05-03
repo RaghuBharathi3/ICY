@@ -140,7 +140,7 @@ def render(client) -> None:
 
     styled = (
         df.style
-        .applymap(color_decision, subset=["Decision"])
+        .map(color_decision, subset=["Decision"])
         .set_properties(**{
             "background-color": "#111827",
             "color": "#e2e8f0",

@@ -114,16 +114,19 @@ def save_report(metrics: dict, name: str) -> Path:
     return path
 
 
-def run_experiment_1_baseline(data_dir: str | Path = "data/raw") -> dict:
+def run_experiment_1_baseline(
+    data_dir: str | Path = "data/raw",
+    extra_dirs: list | None = None,
+) -> dict:
     """
     Experiment 1: Baseline — raw CICIDS2017 columns, no feature engineering, no SMOTE.
     Establishes the performance floor to prove our engineering adds value.
     """
     from src.pipeline.preprocessor import full_pipeline
-    logger.info("═" * 60)
-    logger.info("EXPERIMENT 1 — BASELINE (raw features, no SMOTE)")
-    logger.info("═" * 60)
-    data = full_pipeline(data_dir, apply_engineering=False, use_smote=False)
+    logger.info("=" * 60)
+    logger.info("EXPERIMENT 1 -- BASELINE (raw features, no SMOTE)")
+    logger.info("=" * 60)
+    data = full_pipeline(data_dir, apply_engineering=False, use_smote=False, extra_dirs=extra_dirs)
     model, metrics = train_random_forest(
         data["X_train"], data["y_train"],
         data["X_test"], data["y_test"],
@@ -134,16 +137,19 @@ def run_experiment_1_baseline(data_dir: str | Path = "data/raw") -> dict:
     return metrics
 
 
-def run_experiment_2_engineered(data_dir: str | Path = "data/raw") -> tuple[RandomForestClassifier, dict]:
+def run_experiment_2_engineered(
+    data_dir: str | Path = "data/raw",
+    extra_dirs: list | None = None,
+) -> tuple[RandomForestClassifier, dict]:
     """
     Experiment 2: Engineered — custom 7 features + SMOTE.
     Proves feature engineering improves detection.
     """
     from src.pipeline.preprocessor import full_pipeline
-    logger.info("═" * 60)
-    logger.info("EXPERIMENT 2 — ENGINEERED FEATURES + SMOTE")
-    logger.info("═" * 60)
-    data = full_pipeline(data_dir, apply_engineering=True, use_smote=True)
+    logger.info("=" * 60)
+    logger.info("EXPERIMENT 2 -- ENGINEERED FEATURES + SMOTE")
+    logger.info("=" * 60)
+    data = full_pipeline(data_dir, apply_engineering=True, use_smote=True, extra_dirs=extra_dirs)
     model, metrics = train_random_forest(
         data["X_train"], data["y_train"],
         data["X_test"], data["y_test"],

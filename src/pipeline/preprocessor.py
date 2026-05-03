@@ -34,7 +34,10 @@ from sklearn.preprocessing import MinMaxScaler
 logger = logging.getLogger(__name__)
 
 # ── Columns to drop (non-feature identifiers) ─────────────────────────────────
-DROP_COLS = ["Flow ID", "Source IP", "Destination IP", "Timestamp", "Label"]
+DROP_COLS = [
+    "Flow ID", "Source IP", "Source Port", "Destination IP",
+    "Protocol", "Timestamp", "Label",
+]
 
 # ── Labels to keep → binary mapping ───────────────────────────────────────────
 KEEP_LABELS = {"BENIGN", "DDoS", "PortScan", "DoS GoldenEye",
@@ -44,20 +47,59 @@ KEEP_LABELS = {"BENIGN", "DDoS", "PortScan", "DoS GoldenEye",
 LABEL_MAP = {"BENIGN": 0}   # everything else → 1 (Attack)
 
 
-def load_raw(data_dir: str | Path) -> pd.DataFrame:
-    """Load all CICIDS2017 CSV files from data/raw/ and concatenate."""
-    data_dir = Path(data_dir)
-    csv_files = list(data_dir.glob("*.csv"))
+def _read_csvs_from_dir(directory: Path) -> list:
+    """Read all CSVs in a directory, strip column whitespace, return list of DataFrames."""
+    csv_files = list(directory.glob("*.csv"))
     if not csv_files:
-        raise FileNotFoundError(f"No CSV files found in {data_dir}")
-    logger.info(f"Loading {len(csv_files)} CSV file(s) from {data_dir}")
+        logger.warning(f"No CSV files found in {directory} — skipping.")
+        return []
+    logger.info(f"  Loading {len(csv_files)} CSV(s) from {directory}")
     frames = []
     for f in csv_files:
-        df = pd.read_csv(f, low_memory=False)
-        df.columns = df.columns.str.strip()   # CICIDS2017 has leading spaces
-        frames.append(df)
-    raw = pd.concat(frames, ignore_index=True)
-    logger.info(f"Raw dataset shape: {raw.shape}")
+        for enc in ("utf-8", "cp1252", "latin-1"):
+            try:
+                df = pd.read_csv(f, low_memory=False, encoding=enc)
+                df.columns = df.columns.str.strip()   # CICIDS2017 has leading spaces
+                frames.append(df)
+                break
+            except (UnicodeDecodeError, pd.errors.ParserError):
+                continue
+        else:
+            logger.warning(f"  Could not decode {f.name} — skipping.")
+    return frames
+
+
+def load_raw(
+    data_dir: str | Path,
+    extra_dirs: list[str | Path] | None = None,
+) -> pd.DataFrame:
+    """
+    Load CICIDS2017 CSV files from one or more directories and concatenate.
+
+    Args:
+        data_dir:   Primary directory (e.g. data/raw — ML-ready CSVs).
+        extra_dirs: Optional additional directories (e.g. data/raw_flows —
+                    raw per-flow exports with extra identity columns).
+                    Extra columns like Source IP / Protocol are in DROP_COLS
+                    and will be removed during clean().
+    """
+    all_frames: list = []
+
+    # Primary source
+    primary = Path(data_dir)
+    primary_frames = _read_csvs_from_dir(primary)
+    if not primary_frames:
+        raise FileNotFoundError(f"No CSV files found in {primary}")
+    all_frames.extend(primary_frames)
+
+    # Extra sources (raw per-flow exports, etc.)
+    if extra_dirs:
+        for d in extra_dirs:
+            extra_frames = _read_csvs_from_dir(Path(d))
+            all_frames.extend(extra_frames)
+
+    raw = pd.concat(all_frames, ignore_index=True)
+    logger.info(f"Combined dataset shape: {raw.shape} ({len(all_frames)} file(s) total)")
     return raw
 
 
@@ -185,16 +227,29 @@ def full_pipeline(
     data_dir: str | Path,
     apply_engineering: bool = True,
     use_smote: bool = True,
+    extra_dirs: list[str | Path] | None = None,
 ) -> dict:
     """
     Run the complete preprocessing pipeline.
+
+    Args:
+        data_dir:         Primary CSV directory (ML-ready CSVs).
+        apply_engineering: Add 7 custom behavioural features.
+        use_smote:        Apply SMOTE oversampling on training set.
+        extra_dirs:       Additional CSV directories to merge (e.g. raw_flows).
+
     Returns dict with X_train, X_test, y_train, y_test, scaler, feature_cols.
     """
-    df = load_raw(data_dir)
+    df = load_raw(data_dir, extra_dirs=extra_dirs)
     df = filter_labels(df)
     df = clean(df)
     if apply_engineering:
         df = engineer_features(df)
+        # Re-clean: division-based features can reintroduce inf/extreme values
+        # especially when raw flow rows have flow_duration=0 or near-zero denominators
+        df.replace([np.inf, -np.inf], np.nan, inplace=True)
+        df.dropna(inplace=True)
+        logger.info(f"Post-engineering clean shape: {df.shape}")
     X_train, X_test, y_train, y_test, scaler, feature_cols = split_and_scale(df)
     if use_smote:
         X_train, y_train = apply_smote(X_train, y_train)

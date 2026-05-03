@@ -19,6 +19,7 @@ artifacts/training.log
 
 # Data (CICIDS2017 CSVs are large, not committed)
 data/raw/*.csv
+data/raw_flows/
 data/processed/
 data/watch/
 

@@ -80,17 +80,21 @@ class EnsemblePredictor:
         return results
 
 
-def run_experiment_3_ensemble(data_dir: str | Path = "data/raw", rf_model=None) -> dict:
+def run_experiment_3_ensemble(
+    data_dir: str | Path = "data/raw",
+    rf_model=None,
+    extra_dirs: list | None = None,
+) -> dict:
     """
     Experiment 3: Ensemble evaluation on test set.
     Uses production models (rf_model.pkl + if_model.pkl).
     """
     from src.pipeline.preprocessor import full_pipeline
-    logger.info("═" * 60)
-    logger.info("EXPERIMENT 3 — RF + IF ENSEMBLE")
-    logger.info("═" * 60)
+    logger.info("=" * 60)
+    logger.info("EXPERIMENT 3 -- RF + IF ENSEMBLE")
+    logger.info("=" * 60)
 
-    data = full_pipeline(data_dir, apply_engineering=True, use_smote=False)
+    data = full_pipeline(data_dir, apply_engineering=True, use_smote=False, extra_dirs=extra_dirs)
     X_train, X_test, y_test = data["X_train"], data["X_test"], data["y_test"]
 
     # Train & save Isolation Forest on training features

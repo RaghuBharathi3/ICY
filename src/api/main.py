@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import json
 import logging
+from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -212,7 +213,7 @@ def get_stats():
 def predict(request: PredictRequest):
     """Manual prediction from a feature dict (for testing/demo)."""
     predictor = get_predictor()
-    feature_cols = _load_feature_cols()
+    feature_cols = predictor.feature_cols
 
     if not feature_cols:
         raise HTTPException(
@@ -230,7 +231,6 @@ def predict(request: PredictRequest):
         raw_features=request.features,
     )
 
-    from dataclasses import asdict
     return success_response(asdict(record))
 
 
