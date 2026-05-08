@@ -167,7 +167,7 @@ Displays an infinite scrolling log of flows actively classified as `ATTACK` or `
 ### 8.2 Panel 2: Traffic Overview
 Provides strategic situational awareness.
 * **KPI Strip:** Real-time counters for total flows, normal flows, attacks, and the global attack percentage rate.
-* **Confidence Box Plots:** Illustrates the statistical distribution of the Random Forest's certainty.
+* **Confidence Distribution by Class:** A box plot visualizing the statistical spread of the Random Forest's certainty (confidence scores) across different prediction classes (ATTACK, NORMAL, SUSPICIOUS). It displays the median, spread, and standard deviation, allowing analysts to quickly gauge how confident the model is when classifying different types of network traffic and identify potential areas of model uncertainty or poorly calibrated predictions.
 * **Time-Series Area Charts:** Maps threat volume to 5-minute temporal buckets, allowing analysts to visually identify coordinated attack waves.
 
 ### 8.3 Panel 3: SHAP Explainability
