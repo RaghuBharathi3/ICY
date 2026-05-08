@@ -49,6 +49,9 @@ html, body, [class*="css"] {
     background: #0f1629;
     border-right: 1px solid #1e2d4a;
 }
+[data-testid="stSidebarNav"] {
+    display: none;
+}
 
 /* ── Metric cards ── */
 .metric-card {
@@ -153,7 +156,7 @@ with st.sidebar:
     panel = st.radio(
         "Navigation",
         options=[
-            "[1]  Panel 1 — Live Alerts",
+            "[1]  Panel 1 — Alerts",
             "[2]  Panel 2 — Traffic Overview",
             "[3]  Panel 3 — SHAP Explainability",
             "[4]  Panel 4 — Model Performance",
@@ -197,22 +200,23 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 # ── Panel routing ──────────────────────────────────────────────────────────────
-if "Panel 1" in panel:
-    from dashboard.pages import panel1_alerts
-    panel1_alerts.render(client)
+with st.spinner("Loading dashboard data..."):
+    if "Panel 1" in panel:
+        from dashboard.pages import panel1_alerts
+        panel1_alerts.render(client)
 
-elif "Panel 2" in panel:
-    from dashboard.pages import panel2_traffic
-    panel2_traffic.render(client)
+    elif "Panel 2" in panel:
+        from dashboard.pages import panel2_traffic
+        panel2_traffic.render(client)
 
-elif "Panel 3" in panel:
-    from dashboard.pages import panel3_shap
-    panel3_shap.render(client)
+    elif "Panel 3" in panel:
+        from dashboard.pages import panel3_shap
+        panel3_shap.render(client)
 
-elif "Panel 4" in panel:
-    from dashboard.pages import panel4_performance
-    panel4_performance.render(client)
+    elif "Panel 4" in panel:
+        from dashboard.pages import panel4_performance
+        panel4_performance.render(client)
 
-elif "Panel 5" in panel:
-    from dashboard.pages import panel5_investigate
-    panel5_investigate.render(client)
+    elif "Panel 5" in panel:
+        from dashboard.pages import panel5_investigate
+        panel5_investigate.render(client)

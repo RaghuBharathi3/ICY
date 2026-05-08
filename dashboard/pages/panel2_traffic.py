@@ -82,9 +82,10 @@ def render(client) -> None:
         for d, color in COLORS.items():
             subset = df_c[df_c["Decision"] == d]["Confidence"]
             if len(subset) > 0:
+                r, g, b = tuple(int(color.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
                 fig2.add_trace(go.Box(
                     y=subset, name=d,
-                    marker_color=color, fillcolor=color + "33", boxmean="sd",
+                    marker_color=color, fillcolor=f"rgba({r},{g},{b},0.2)", boxmean="sd",
                 ))
         fig2.update_layout(**_LAYOUT, height=320, showlegend=False,
             yaxis=dict(title="RF Confidence", gridcolor="#1e2d4a"),

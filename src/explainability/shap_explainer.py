@@ -47,15 +47,17 @@ class SHAPExplainer:
         """Compute SHAP values for X. Returns array of shape (n_samples, n_features)."""
         import shap
         shap_vals = self.explainer.shap_values(X)
-        # TreeExplainer returns list [class0_vals, class1_vals] for binary classification
+        # TreeExplainer returns list [class0_vals, class1_vals] or 3D array for binary classification
         if isinstance(shap_vals, list):
             return shap_vals[1]  # values for class=1 (Attack)
+        if isinstance(shap_vals, np.ndarray) and shap_vals.ndim == 3:
+            return shap_vals[:, :, 1]
         return shap_vals
 
     def explain_single(self, x: np.ndarray) -> list[dict]:
         """
         Explain a single prediction. Returns top-5 features by SHAP contribution.
-        Format: [{"feature": "syn_ack_ratio", "value": 2.4, "contribution": 0.43}, ...]
+        Format: [{"feature": "syn_ack_ratio", "value": 2.4, "shap_value": 0.43}, ...]
         """
         if x.ndim == 1:
             x = x.reshape(1, -1)
@@ -68,7 +70,7 @@ class SHAPExplainer:
             top_features.append({
                 "feature": self.feature_cols[idx],
                 "value": round(float(x[0, idx]), 4),
-                "contribution": round(float(shap_vals[idx]), 4),
+                "shap_value": round(float(shap_vals[idx]), 4),
             })
         return top_features
 
@@ -125,9 +127,9 @@ def plain_english_explanation(top_features: list[dict], threshold_map: Optional[
     if not top_features:
         return "No explanation available."
     top = top_features[0]
-    direction = "high" if top["contribution"] > 0 else "low"
+    direction = "high" if top["shap_value"] > 0 else "low"
     return (
         f"This flow was flagged primarily because '{top['feature']}' "
         f"({top['value']:.2f}) is abnormally {direction}, "
-        f"contributing {abs(top['contribution']):.2f} to the attack score."
+        f"contributing {abs(top['shap_value']):.2f} to the attack score."
     )
