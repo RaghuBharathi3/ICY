@@ -255,27 +255,27 @@ GET "/api/dashboard-data" (req, res) => {
 ```mermaid
 flowchart TD
     %% Actors
-    User[👤 User] -->|Scans QR| QR[📱 QR Code (URL + token)]
+    User[User] -->|Scans QR| QR["QR Code (URL + token)"]
 
     %% Front‑end
-    subgraph FE[Next.js Front‑end]
-        FE_App[App (React UI)]
+    subgraph FE["Next.js Front-end"]
+        FE_App["App (React UI)"]
         FE_Router[Router / Pages]
     end
     QR --> FE_App
     FE_App -->|Loads| FE_Router
 
     %% API Layer
-    subgraph BE[API Layer (Node/Express)]
-        Verify[POST /api/verify-password]
-        Dashboard[GET /api/dashboard-data]
+    subgraph BE["API Layer (Node/Express)"]
+        Verify["POST /api/verify-password"]
+        Dashboard["GET /api/dashboard-data"]
     end
     FE_Router -->|POST credentials| Verify
     Verify -->|Success JWT| FE_Router
     FE_Router -->|GET data| Dashboard
 
     %% Persistence
-    subgraph DB[Database (PostgreSQL)]
+    subgraph DB["Database (PostgreSQL)"]
         Users[users table]
         Data[user_data table]
     end
@@ -283,8 +283,8 @@ flowchart TD
     Dashboard -->|SELECT| Data
 
     %% Session Store (optional)
-    subgraph Sess[Session Store (Redis)]
-        JWT[JWT / Session Token]
+    subgraph Sess["Session Store (Redis)"]
+        JWT["JWT / Session Token"]
     end
     Verify -->|store token| JWT
     Dashboard -->|validate token| JWT
