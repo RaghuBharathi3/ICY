@@ -255,53 +255,54 @@ GET "/api/dashboard-data" (req, res) => {
 ```mermaid
 flowchart TD
     %% Actors
-    User[User] -->|Scans QR| QR["QR Code (URL + token)"]
+    User["<b>User</b>"] -->|"<b>Scans QR</b>"| QR["<b>QR Code</b><br/>(URL + token)"]
 
-    %% Front‑end
-    subgraph FE["Next.js Front-end"]
-        FE_App["App (React UI)"]
-        FE_Router[Router / Pages]
+    %% Front-end
+    subgraph FE["<b>Next.js Front-end</b>"]
+        FE_App["<b>App</b><br/>(React UI)"]
+        FE_Router["<b>Router / Pages</b>"]
     end
     QR --> FE_App
-    FE_App -->|Loads| FE_Router
+    FE_App -->|"<b>Loads</b>"| FE_Router
 
     %% API Layer
-    subgraph BE["API Layer (Node/Express)"]
-        Verify["POST /api/verify-password"]
-        Dashboard["GET /api/dashboard-data"]
+    subgraph BE["<b>API Layer (Node/Express)</b>"]
+        Verify["<b>POST</b><br/>/api/verify-password"]
+        Dashboard["<b>GET</b><br/>/api/dashboard-data"]
     end
-    FE_Router -->|POST credentials| Verify
-    Verify -->|Success JWT| FE_Router
-    FE_Router -->|GET data| Dashboard
+    FE_Router -->|"<b>POST credentials</b>"| Verify
+    Verify -->|"<b>Success JWT</b>"| FE_Router
+    FE_Router -->|"<b>GET data</b>"| Dashboard
 
     %% Persistence
-    subgraph DB["Database (PostgreSQL)"]
-        Users[users table]
-        Data[user_data table]
+    subgraph DB["<b>Database (PostgreSQL)</b>"]
+        Users["<b>users</b> table"]
+        Data["<b>user_data</b> table"]
     end
-    Verify -->|SELECT/UPDATE| Users
-    Dashboard -->|SELECT| Data
+    Verify -->|"<b>SELECT/UPDATE</b>"| Users
+    Dashboard -->|"<b>SELECT</b>"| Data
 
-    %% Session Store (optional)
-    subgraph Sess["Session Store (Redis)"]
-        JWT["JWT / Session Token"]
+    %% Session Store
+    subgraph Sess["<b>Session Store (Redis)</b>"]
+        JWT["<b>JWT / Session Token</b>"]
     end
-    Verify -->|store token| JWT
-    Dashboard -->|validate token| JWT
+    Verify -->|"<b>store token</b>"| JWT
+    Dashboard -->|"<b>validate token</b>"| JWT
 
     %% External
-    QRGen[QR Generator Service] -->|creates| QR
+    QRGen["<b>QR Generator Service</b>"] -->|"<b>creates</b>"| QR
 
-    classDef user fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef frontend fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef backend fill:#bfb,stroke:#333,stroke-width:2px;
-    classDef db fill:#ffb,stroke:#333,stroke-width:2px;
-    classDef session fill:#fcc,stroke:#333,stroke-width:2px;
+    classDef user fill:#f9f,stroke:#c06,stroke-width:3px,color:#000;
+    classDef frontend fill:#bbf,stroke:#339,stroke-width:3px,color:#000;
+    classDef backend fill:#bfb,stroke:#363,stroke-width:3px,color:#000;
+    classDef db fill:#ffb,stroke:#660,stroke-width:3px,color:#000;
+    classDef session fill:#fcc,stroke:#900,stroke-width:3px,color:#000;
     class User user;
-    class FE frontend;
-    class BE backend;
+    class FE,FE_App,FE_Router frontend;
+    class BE,Verify,Dashboard backend;
     class Users,Data db;
-    class JWT session;
+    class JWT,Sess session;
+    class QR,QRGen default;
 ```
 
 ---
